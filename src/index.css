@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0F3D2E;
+  --color-secondary: #A7D7A9;
+  --color-accent: #D4AF37;
+  --color-cream: #F5F5EC;
+  
+  --color-dark-bg: #071913;
+  --color-dark-surface: #0c271e;
+  --color-dark-border: #13392c;
+  
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+
+  --animate-float-slow: float-slow 8s ease-in-out infinite;
+  --animate-float-medium: float-medium 6s ease-in-out infinite;
+  --animate-float-fast: float-fast 4s ease-in-out infinite;
+  --animate-drift-leaf: drift-leaf 12s linear infinite;
+  --animate-leaf-sway: leaf-sway 3s ease-in-out infinite;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-fade-in-up: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+  @keyframes float-medium {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(-8deg); }
+  }
+  @keyframes float-fast {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(12deg); }
+  }
+  @keyframes drift-leaf {
+    0% {
+      transform: translateY(-10%) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    90% {
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(110%) translateX(100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  @keyframes leaf-sway {
+    0%, 100% { transform: rotate(-5deg) translateY(0); }
+    50% { transform: rotate(15deg) translateY(-5px); }
+  }
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Custom Base Styles */
+html, body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-primary);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body.dark {
+  background-color: var(--color-dark-bg);
+  color: #e2f0eb;
+}
+
+/* Custom Utilities */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+.dark ::-webkit-scrollbar-track {
+  background: var(--color-dark-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Glassmorphism Styles */
+.glass {
+  background: rgba(245, 245, 236, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 61, 46, 0.08);
+}
+
+.dark .glass {
+  background: rgba(12, 39, 30, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(167, 215, 169, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(15, 61, 46, 0.04);
+}
+
+.dark .glass-card {
+  background: rgba(12, 39, 30, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(167, 215, 169, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Gold Text Gradient for Premium Headers */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA7C11 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated Leaf Custom Pointer Trail class */
+.cursor-leaf-trail {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-secondary);
+  border-radius: 50% 0 50% 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  opacity: 0.6;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.dark .cursor-leaf-trail {
+  background-color: var(--color-accent);
+}
