@@ -185,8 +185,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Staff Mock Data
   const [staffList, setStaffList] = useState<Staff[]>(() => {
-    const saved = localStorage.getItem('dashboard_staff');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('dashboard_staff');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing dashboard_staff:', e);
+    }
     return [
       {
         id: 'S-101',
@@ -271,8 +275,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Rooms/Lodges Mock Data
   const [rooms, setRooms] = useState<Room[]>(() => {
-    const saved = localStorage.getItem('dashboard_rooms');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('dashboard_rooms');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing dashboard_rooms:', e);
+    }
     return [
       {
         id: 'R-201',
@@ -323,8 +331,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Audit Logs
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
-    const saved = localStorage.getItem('dashboard_audit_logs');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('dashboard_audit_logs');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing dashboard_audit_logs:', e);
+    }
     return [
       {
         id: 'L-5001',
@@ -347,8 +359,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Notifications
   const [notifications, setNotifications] = useState<Notification[]>(() => {
-    const saved = localStorage.getItem('dashboard_notifications');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('dashboard_notifications');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing dashboard_notifications:', e);
+    }
     return [
       {
         id: 'N-301',
@@ -371,8 +387,12 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Transaction Ledger (Payments Module)
   const [transactions, setTransactions] = useState<{ id: string; date: string; amount: number; method: string; status: 'Completed' | 'Refunded'; customer: string }[]>(() => {
-    const saved = localStorage.getItem('dashboard_transactions');
-    if (saved) return JSON.parse(saved);
+    try {
+      const saved = localStorage.getItem('dashboard_transactions');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing dashboard_transactions:', e);
+    }
     return [
       { id: 'TX-901', date: '2026-05-25', amount: 2500, method: 'Stripe (Visa)', status: 'Completed', customer: 'Aveline Moreau' },
       { id: 'TX-902', date: '2026-05-22', amount: 2450, method: 'Stripe (Mastercard)', status: 'Completed', customer: 'Aveline Moreau' },

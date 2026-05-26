@@ -44,13 +44,23 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load initial states from localStorage if available
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('tea_user');
-    return saved ? JSON.parse(saved) : {
-      name: 'Aveline Moreau',
-      email: 'traveler@tea.com',
-      role: 'user',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80'
-    };
+    try {
+      const saved = localStorage.getItem('tea_user');
+      return saved ? JSON.parse(saved) : {
+        name: 'Aveline Moreau',
+        email: 'traveler@tea.com',
+        role: 'user',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80'
+      };
+    } catch (e) {
+      console.error('Error parsing tea_user:', e);
+      return {
+        name: 'Aveline Moreau',
+        email: 'traveler@tea.com',
+        role: 'user',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80'
+      };
+    }
   });
 
   const [tours, setTours] = useState<Tour[]>(() => {
@@ -74,13 +84,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [bookings, setBookings] = useState<Booking[]>(() => {
-    const saved = localStorage.getItem('tea_bookings');
-    return saved ? JSON.parse(saved) : mockBookings;
+    try {
+      const saved = localStorage.getItem('tea_bookings');
+      return saved ? JSON.parse(saved) : mockBookings;
+    } catch (e) {
+      console.error('Error parsing tea_bookings:', e);
+      return mockBookings;
+    }
   });
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
-    const saved = localStorage.getItem('tea_wishlist');
-    return saved ? JSON.parse(saved) : ['sapa-emerald-terraces'];
+    try {
+      const saved = localStorage.getItem('tea_wishlist');
+      return saved ? JSON.parse(saved) : ['sapa-emerald-terraces'];
+    } catch (e) {
+      console.error('Error parsing tea_wishlist:', e);
+      return ['sapa-emerald-terraces'];
+    }
   });
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {

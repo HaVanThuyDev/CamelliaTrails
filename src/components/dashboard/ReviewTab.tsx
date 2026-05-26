@@ -19,8 +19,13 @@ export const ReviewTab: React.FC = () => {
   const { addLog, role } = useDashboard();
   const [filterSentiment, setFilterSentiment] = useState<'all' | 'positive' | 'negative' | 'neutral'>('all');
   const [flaggedIds, setFlaggedIds] = useState<string[]>(() => {
-    const saved = localStorage.getItem('dashboard_flagged_reviews');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('dashboard_flagged_reviews');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error('Error parsing dashboard_flagged_reviews:', e);
+      return [];
+    }
   });
 
   // Gather and flatten reviews from all tours
