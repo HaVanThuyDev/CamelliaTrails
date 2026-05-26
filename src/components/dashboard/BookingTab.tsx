@@ -97,9 +97,9 @@ export const BookingTab: React.FC = () => {
             <thead className="bg-[#EBEBE0]/60 dark:bg-dark-surface/60 text-primary/60 dark:text-cream/60 uppercase border-b border-primary/10">
               <tr>
                 <th className="p-4 md:p-6">Đơn hàng / Khách hàng</th>
-                <th className="p-4 md:p-6">Gói Tour đã chọn</th>
-                <th className="p-4 md:p-6">Ngày khởi hành</th>
-                <th className="p-4 md:p-6 text-center">Khách</th>
+                <th className="p-4 md:p-6 hidden sm:table-cell">Gói Tour đã chọn</th>
+                <th className="p-4 md:p-6 hidden md:table-cell">Ngày khởi hành</th>
+                <th className="p-4 md:p-6 text-center hidden lg:table-cell">Khách</th>
                 <th className="p-4 md:p-6">Tổng phí</th>
                 <th className="p-4 md:p-6 text-center">Trạng thái</th>
                 <th className="p-4 md:p-6 text-right">Hành động</th>
@@ -118,13 +118,13 @@ export const BookingTab: React.FC = () => {
                         <p className="text-[10px] text-primary/50 dark:text-cream/50 mt-0.5">{b.userEmail} • <span className="font-bold">{b.id}</span></p>
                       </div>
                     </td>
-                    <td className="p-4 md:p-6 max-w-[200px] truncate">{b.tourTitle}</td>
-                    <td className="p-4 md:p-6">
+                    <td className="p-4 md:p-6 max-w-[200px] truncate hidden sm:table-cell">{b.tourTitle}</td>
+                    <td className="p-4 md:p-6 hidden md:table-cell">
                       <span className="flex items-center gap-1.5 font-mono">
                         <Calendar className="w-3.5 h-3.5 text-accent" /> {b.date}
                       </span>
                     </td>
-                    <td className="p-4 md:p-6 text-center font-mono">{b.guests}</td>
+                    <td className="p-4 md:p-6 text-center font-mono hidden lg:table-cell">{b.guests}</td>
                     <td className="p-4 md:p-6 font-serif font-bold text-accent font-mono">${b.totalPrice.toLocaleString()}</td>
                     <td className="p-4 md:p-6 text-center">
                       <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${

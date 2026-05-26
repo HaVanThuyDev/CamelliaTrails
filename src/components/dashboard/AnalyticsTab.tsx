@@ -1,12 +1,148 @@
 import React, { useState } from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import { useApp } from '../../context/AppContext';
 import { useDashboard } from '../../context/DashboardContext';
 import { Download, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const AnalyticsTab: React.FC = () => {
-  const { bookings } = useApp();
+  const { bookings, theme } = useApp();
   const { addLog } = useDashboard();
   const [isExporting, setIsExporting] = useState(false);
+  const isDark = theme === 'dark';
+
+  // Theme-based colors
+  const textColor = isDark ? '#e2f0eb' : '#0F3D2E';
+  const gridLineColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 61, 46, 0.08)';
+  const tooltipBgColor = isDark ? '#0c271e' : '#F5F5EC';
+  const tooltipTextColor = isDark ? '#e2f0eb' : '#0F3D2E';
+  const tooltipBorderColor = isDark ? '#D4AF37' : '#0F3D2E';
+
+  // Highcharts Config for Revenue Forecast Model
+  const forecastOptions: Highcharts.Options = {
+    chart: {
+      type: 'areaspline',
+      backgroundColor: 'transparent',
+      height: 220,
+      spacingBottom: 5,
+      spacingTop: 5,
+      spacingLeft: 0,
+      spacingRight: 0,
+      style: {
+        fontFamily: "'Plus Jakarta Sans', sans-serif"
+      }
+    },
+    title: {
+      text: undefined
+    },
+    credits: {
+      enabled: false
+    },
+    xAxis: {
+      categories: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6 (Dự báo)', 'T7 (Dự báo)'],
+      labels: {
+        style: {
+          color: textColor,
+          fontSize: '10px',
+          fontWeight: '600'
+        }
+      },
+      lineColor: gridLineColor,
+      tickColor: gridLineColor
+    },
+    yAxis: {
+      title: {
+        text: undefined
+      },
+      labels: {
+        style: {
+          color: textColor,
+          fontSize: '9px',
+          fontWeight: '600'
+        },
+        formatter: function () {
+          return '$' + this.value.toLocaleString();
+        }
+      },
+      gridLineColor: gridLineColor
+    },
+    tooltip: {
+      backgroundColor: tooltipBgColor,
+      style: {
+        color: tooltipTextColor,
+        fontSize: '11px',
+        fontWeight: 'bold'
+      },
+      borderColor: tooltipBorderColor,
+      borderRadius: 12,
+      shadow: true,
+      shared: true,
+      valuePrefix: '$'
+    },
+    plotOptions: {
+      areaspline: {
+        marker: {
+          radius: 5,
+          fillColor: isDark ? '#0c271e' : '#F5F5EC',
+          lineWidth: 2,
+          states: {
+            hover: {
+              radius: 7
+            }
+          }
+        },
+        lineWidth: 3,
+        threshold: null
+      }
+    },
+    legend: {
+      align: 'right',
+      verticalAlign: 'top',
+      borderWidth: 0,
+      itemStyle: {
+        color: textColor,
+        fontSize: '10px',
+        fontWeight: '600'
+      }
+    },
+    series: [
+      {
+        name: 'Thực tế',
+        type: 'areaspline',
+        color: '#0F3D2E',
+        fillColor: {
+          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+          stops: [
+            [0, isDark ? 'rgba(167, 215, 169, 0.25)' : 'rgba(15, 61, 46, 0.25)'],
+            [1, 'rgba(15, 61, 46, 0)']
+          ]
+        },
+        lineColor: isDark ? '#A7D7A9' : '#0F3D2E',
+        marker: {
+          lineColor: isDark ? '#A7D7A9' : '#0F3D2E'
+        },
+        data: [8500, 12500, 10200, 18900, 24500, null, null]
+      },
+      {
+        name: 'Dự báo',
+        type: 'areaspline',
+        color: '#D4AF37',
+        dashStyle: 'Dash',
+        fillColor: {
+          linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+          stops: [
+            [0, 'rgba(212, 175, 55, 0.25)'],
+            [1, 'rgba(212, 175, 55, 0)']
+          ]
+        },
+        lineColor: '#D4AF37',
+        marker: {
+          lineColor: '#D4AF37'
+        },
+        data: [null, null, null, null, 24500, 36000, 42000]
+      }
+    ]
+  };
 
   // Heatmap click data (mocking destination click counts)
   const heatmapData = [
@@ -72,65 +208,9 @@ export const AnalyticsTab: React.FC = () => {
             <h3 className="font-serif text-lg font-bold text-primary dark:text-cream mb-4">Mô Hình Ước Tính Doanh Thu Hè 2026</h3>
           </div>
 
-          {/* SVG Predictive curve chart */}
-          <div className="w-full overflow-x-auto my-4">
-            <svg viewBox="0 0 500 200" className="w-full min-w-[400px] overflow-visible">
-              <defs>
-                <linearGradient id="solidGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0F3D2E" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#0F3D2E" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="dashedGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-
-              {/* Grid lines */}
-              {[25, 75, 125, 175].map((y, i) => (
-                <line key={i} x1="30" y1={y} x2="470" y2={y} stroke="rgba(15, 61, 46, 0.06)" strokeDasharray="3 3" />
-              ))}
-
-              {/* Historical solid line (T1 -> T5) */}
-              {/* Coordinates: T1(50, 160), T2(120, 140), T3(190, 120), T4(260, 90), T5(330, 60) */}
-              <path
-                d="M 50 160 L 120 140 L 190 120 L 260 90 L 330 60"
-                fill="none"
-                stroke="#0f3d2e"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                className="dark:stroke-secondary"
-              />
-              <path d="M 50 160 L 120 140 L 190 120 L 260 90 L 330 60 L 330 180 L 50 180 Z" fill="url(#solidGrad)" />
-
-              {/* Predicted dotted line (T5 -> T6 -> T7) */}
-              {/* Coordinates: T5(330, 60), T6(400, 40), T7(470, 25) */}
-              <path
-                d="M 330 60 L 400 40 L 470 25"
-                fill="none"
-                stroke="#d4af37"
-                strokeWidth="3.5"
-                strokeDasharray="5 5"
-                strokeLinecap="round"
-              />
-              <path d="M 330 60 L 400 40 L 470 25 L 470 180 L 330 180 Z" fill="url(#dashedGrad)" />
-
-              {/* Points labels */}
-              {[
-                { x: 50, y: 160, txt: 'T1' },
-                { x: 120, y: 140, txt: 'T2' },
-                { x: 190, y: 120, txt: 'T3' },
-                { x: 260, y: 90, txt: 'T4' },
-                { x: 330, y: 60, txt: 'T5' },
-                { x: 400, y: 40, txt: 'T6 (Dự kiến)', labelColor: '#d4af37' },
-                { x: 470, y: 25, txt: 'T7 (Dự kiến)', labelColor: '#d4af37' }
-              ].map((pt, idx) => (
-                <g key={idx}>
-                  <circle cx={pt.x} cy={pt.y} r="4.5" fill={pt.labelColor || '#0f3d2e'} stroke="#F5F5EC" strokeWidth="1.5" />
-                  <text x={pt.x} y={193} textAnchor="middle" className="text-[9px] font-mono fill-primary/60 dark:fill-cream/60 font-semibold">{pt.txt}</text>
-                </g>
-              ))}
-            </svg>
+          {/* Highcharts Render for Predictive Analytics */}
+          <div className="w-full my-4">
+            <HighchartsReact highcharts={Highcharts} options={forecastOptions} />
           </div>
 
           <div className="flex gap-2.5 items-start text-[10px] bg-accent/10 border border-accent/20 p-3.5 rounded-2xl text-primary/85 dark:text-cream/85">

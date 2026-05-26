@@ -5,7 +5,7 @@ import { useDashboard } from '../context/DashboardContext';
 import {
   Leaf, Menu, Sun, Moon, Bell, Search, Globe, ChevronDown, User, LogOut,
   BarChart3, Briefcase, FileSpreadsheet, Home, Calendar, Users, Eye,
-  AlertCircle, ShieldCheck, CreditCard, ClipboardList, Keyboard
+  AlertCircle, ShieldCheck, CreditCard, ClipboardList, Keyboard, X
 } from 'lucide-react';
 
 // Tab Components
@@ -37,6 +37,7 @@ export const Dashboard: React.FC = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Search states
   const [searchQuery, setSearchQuery] = useState('');
@@ -145,9 +146,85 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="w-full min-h-screen flex bg-cream dark:bg-dark-bg text-primary dark:text-cream transition-colors duration-500 font-sans">
       
-      {/* 1. LEFT SIDEBAR */}
+      {/* 1. MOBILE SIDEBAR DRAWER OVERLAY */}
+      {isMobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+          {/* Drawer Content */}
+          <aside className="relative flex w-64 max-w-xs flex-col bg-cream dark:bg-dark-surface border-r border-primary/10 dark:border-cream/10 p-5 z-10 h-full animate-slide-in-left">
+            {/* Logo and Close Button */}
+            <div className="flex items-center justify-between pb-6 border-b border-primary/5">
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => { navigate('/'); setIsMobileSidebarOpen(false); }}>
+                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md">
+                  <Leaf className="text-secondary w-5 h-5" />
+                </div>
+                <div>
+                  <span className="font-serif text-lg font-bold tracking-tight text-primary dark:text-cream block">
+                    Camellia<span className="text-accent">Trails</span>
+                  </span>
+                  <span className="block text-[8px] tracking-widest text-accent uppercase -mt-1 font-bold">
+                    Console Portal
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsMobileSidebarOpen(false)}
+                className="p-1 rounded-lg hover:bg-primary/5 text-primary/60 dark:text-cream/60 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* Navigation Links */}
+            <nav className="mt-6 flex-grow space-y-1 overflow-y-auto pr-1">
+              {visibleNavItems.map(item => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setIsMobileSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3.5 px-4.5 py-3 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer group ${
+                      isActive
+                        ? 'bg-primary dark:bg-accent text-cream dark:text-primary shadow-sm'
+                        : 'text-primary/70 dark:text-cream/70 hover:bg-primary/5 dark:hover:bg-cream/5'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-accent dark:text-primary' : 'text-primary/60 dark:text-cream/60 group-hover:text-accent'}`} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+            
+            {/* Profile logout */}
+            <div className="pt-4 border-t border-primary/5 mt-auto">
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMobileSidebarOpen(false);
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-500/5 transition-all cursor-pointer"
+              >
+                <LogOut className="w-4 h-4 flex-shrink-0" />
+                <span>Đăng xuất console</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* 2. LEFT SIDEBAR (Desktop) */}
       <aside
-        className={`bg-cream/75 dark:bg-dark-surface/75 border-r border-primary/10 dark:border-cream/10 backdrop-blur-md flex flex-col justify-between transition-all duration-300 z-30 ${
+        className={`bg-cream/75 dark:bg-dark-surface/75 border-r border-primary/10 dark:border-cream/10 backdrop-blur-md flex flex-col justify-between transition-all duration-300 z-30 hidden md:flex ${
           isSidebarCollapsed ? 'w-20' : 'w-64'
         }`}
       >
@@ -236,7 +313,16 @@ export const Dashboard: React.FC = () => {
       <div className="flex-grow flex flex-col min-w-0">
         
         {/* TOP HEADER NAVBAR */}
-        <header className="h-16 border-b border-primary/10 dark:border-cream/10 bg-cream/40 dark:bg-dark-bg/40 backdrop-blur-md px-6 flex items-center justify-between z-20">
+        <header className="h-16 border-b border-primary/10 dark:border-cream/10 bg-cream/40 dark:bg-dark-bg/40 backdrop-blur-md px-4 md:px-6 flex items-center justify-between gap-4 z-20">
+          
+          {/* Mobile Sidebar Hamburger Toggle */}
+          <button
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="p-2 rounded-xl bg-cream/50 dark:bg-dark-surface/50 border border-primary/10 text-primary dark:text-cream flex items-center justify-center hover:bg-primary/5 transition-all md:hidden cursor-pointer flex-shrink-0"
+            title="Mở menu điều hướng"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
           
           {/* Left search bar */}
           <div className="flex items-center gap-3 flex-grow max-w-md relative">

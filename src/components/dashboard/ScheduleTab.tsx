@@ -135,64 +135,66 @@ export const ScheduleTab: React.FC = () => {
       </div>
 
       {/* Calendar Grid Container */}
-      <div className="glass rounded-3xl border border-primary/10 overflow-hidden shadow-xl">
-        {/* Days of Week Header */}
-        <div className="grid grid-cols-7 bg-[#EBEBE0]/60 dark:bg-dark-surface/60 border-b border-primary/10 text-center py-3 text-[10px] font-bold uppercase tracking-wider text-primary/60 dark:text-cream/60">
-          <div>Thứ 2</div>
-          <div>Thứ 3</div>
-          <div>Thứ 4</div>
-          <div>Thứ 5</div>
-          <div>Thứ 6</div>
-          <div>Thứ 7</div>
-          <div>Chủ Nhật</div>
-        </div>
+      <div className="glass rounded-3xl border border-primary/10 shadow-xl overflow-x-auto">
+        <div className="min-w-[800px]">
+          {/* Days of Week Header */}
+          <div className="grid grid-cols-7 bg-[#EBEBE0]/60 dark:bg-dark-surface/60 border-b border-primary/10 text-center py-3 text-[10px] font-bold uppercase tracking-wider text-primary/60 dark:text-cream/60">
+            <div>Thứ 2</div>
+            <div>Thứ 3</div>
+            <div>Thứ 4</div>
+            <div>Thứ 5</div>
+            <div>Thứ 6</div>
+            <div>Thứ 7</div>
+            <div>Chủ Nhật</div>
+          </div>
 
-        {/* Days Cells Grid */}
-        <div className="grid grid-cols-7 divide-x divide-y divide-primary/5 dark:divide-cream/5 bg-transparent min-h-[500px]">
-          {calendarDays.map((day, idx) => {
-            const dayBookings = day ? getBookingsForDay(day) : [];
-            const isTarget = draggedOverDay === day;
+          {/* Days Cells Grid */}
+          <div className="grid grid-cols-7 divide-x divide-y divide-primary/5 dark:divide-cream/5 bg-transparent min-h-[500px]">
+            {calendarDays.map((day, idx) => {
+              const dayBookings = day ? getBookingsForDay(day) : [];
+              const isTarget = draggedOverDay === day;
 
-            return (
-              <div
-                key={idx}
-                className={`p-2.5 flex flex-col justify-between min-h-[100px] transition-colors relative ${
-                  !day ? 'bg-cream/10 dark:bg-dark-bg/10' : 'bg-transparent'
-                } ${
-                  isTarget ? 'bg-accent/15 border-2 border-dashed border-accent z-10' : ''
-                }`}
-                onDragOver={(e) => day && handleDragOver(e, day)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => day && handleDrop(e, day)}
-              >
-                {/* Day number */}
-                {day && (
-                  <span className="font-mono text-xs font-bold text-primary/50 dark:text-cream/50 self-start block mb-1">
-                    {day}
-                  </span>
-                )}
+              return (
+                <div
+                  key={idx}
+                  className={`p-2.5 flex flex-col justify-between min-h-[100px] transition-colors relative ${
+                    !day ? 'bg-cream/10 dark:bg-dark-bg/10' : 'bg-transparent'
+                  } ${
+                    isTarget ? 'bg-accent/15 border-2 border-dashed border-accent z-10' : ''
+                  }`}
+                  onDragOver={(e) => day && handleDragOver(e, day)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => day && handleDrop(e, day)}
+                >
+                  {/* Day number */}
+                  {day && (
+                    <span className="font-mono text-xs font-bold text-primary/50 dark:text-cream/50 self-start block mb-1">
+                      {day}
+                    </span>
+                  )}
 
-                {/* Day Bookings timeline items list */}
-                <div className="space-y-1.5 flex-grow flex flex-col justify-start mt-2">
-                  {dayBookings.map((b) => (
-                    <div
-                      key={b.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, b.id)}
-                      className="p-2 rounded-xl bg-primary text-cream dark:bg-dark-surface dark:border dark:border-accent/30 text-[9px] font-semibold cursor-grab active:cursor-grabbing hover:scale-102 transition-all flex items-start gap-1 select-none shadow-md group relative"
-                    >
-                      <GripVertical className="w-3.5 h-3.5 text-cream/40 group-hover:text-accent flex-shrink-0 mt-0.5" />
-                      <div className="overflow-hidden">
-                        <p className="font-serif truncate font-bold text-white leading-tight">{b.userName}</p>
-                        <p className="opacity-75 truncate">{b.tourTitle}</p>
-                        <p className="opacity-60 flex items-center gap-0.5 mt-0.5"><Clock className="w-2.5 h-2.5" /> {b.guests} khách</p>
+                  {/* Day Bookings timeline items list */}
+                  <div className="space-y-1.5 flex-grow flex flex-col justify-start mt-2">
+                    {dayBookings.map((b) => (
+                      <div
+                        key={b.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, b.id)}
+                        className="p-2 rounded-xl bg-primary text-cream dark:bg-dark-surface dark:border dark:border-accent/30 text-[9px] font-semibold cursor-grab active:cursor-grabbing hover:scale-102 transition-all flex items-start gap-1 select-none shadow-md group relative"
+                      >
+                        <GripVertical className="w-3.5 h-3.5 text-cream/40 group-hover:text-accent flex-shrink-0 mt-0.5" />
+                        <div className="overflow-hidden">
+                          <p className="font-serif truncate font-bold text-white leading-tight">{b.userName}</p>
+                          <p className="opacity-75 truncate">{b.tourTitle}</p>
+                          <p className="opacity-60 flex items-center gap-0.5 mt-0.5"><Clock className="w-2.5 h-2.5" /> {b.guests} khách</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

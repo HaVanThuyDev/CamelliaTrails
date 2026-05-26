@@ -50,10 +50,10 @@ export const PaymentTab: React.FC = () => {
             <table className="w-full text-left text-xs font-semibold text-primary dark:text-cream border-collapse">
               <thead className="bg-[#EBEBE0]/60 dark:bg-dark-surface/60 text-primary/60 dark:text-cream/60 uppercase border-b border-primary/10">
                 <tr>
-                  <th className="p-4 md:p-6">Mã giao dịch</th>
+                  <th className="p-4 md:p-6 hidden sm:table-cell">Mã giao dịch</th>
                   <th className="p-4 md:p-6">Khách hàng</th>
-                  <th className="p-4 md:p-6">Ngày thanh toán</th>
-                  <th className="p-4 md:p-6">Cổng thanh toán</th>
+                  <th className="p-4 md:p-6 hidden md:table-cell">Ngày thanh toán</th>
+                  <th className="p-4 md:p-6 hidden sm:table-cell">Cổng thanh toán</th>
                   <th className="p-4 md:p-6 text-right">Tổng phí</th>
                   <th className="p-4 md:p-6 text-center">Trạng thái</th>
                   <th className="p-4 md:p-6 text-right">Hoàn trả</th>
@@ -62,10 +62,10 @@ export const PaymentTab: React.FC = () => {
               <tbody className="divide-y divide-primary/5 dark:divide-cream/5">
                 {transactions.map((tx) => (
                   <tr key={tx.id} className="hover:bg-primary/5 dark:hover:bg-cream/5 transition-colors">
-                    <td className="p-4 md:p-6 font-mono font-bold text-primary/80 dark:text-cream/80">{tx.id}</td>
+                    <td className="p-4 md:p-6 font-mono font-bold text-primary/80 dark:text-cream/80 hidden sm:table-cell">{tx.id}</td>
                     <td className="p-4 md:p-6">{tx.customer}</td>
-                    <td className="p-4 md:p-6 font-mono text-primary/55 dark:text-cream/55">{tx.date}</td>
-                    <td className="p-4 md:p-6 font-semibold text-[10px] uppercase text-primary/65 dark:text-cream/65">{tx.method}</td>
+                    <td className="p-4 md:p-6 font-mono text-primary/55 dark:text-cream/55 hidden md:table-cell">{tx.date}</td>
+                    <td className="p-4 md:p-6 font-semibold text-[10px] uppercase text-primary/65 dark:text-cream/65 hidden sm:table-cell">{tx.method}</td>
                     <td className="p-4 md:p-6 text-right font-serif font-bold text-accent font-mono">${tx.amount.toLocaleString()}</td>
                     <td className="p-4 md:p-6 text-center">
                       <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold ${

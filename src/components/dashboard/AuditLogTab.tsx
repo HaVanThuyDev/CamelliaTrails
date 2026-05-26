@@ -43,9 +43,9 @@ export const AuditLogTab: React.FC = () => {
             <thead className="bg-[#EBEBE0]/60 dark:bg-dark-surface/60 text-primary/60 dark:text-cream/60 uppercase border-b border-primary/10">
               <tr>
                 <th className="p-4 md:p-6">Thời gian</th>
-                <th className="p-4 md:p-6">Mã nhật ký</th>
+                <th className="p-4 md:p-6 hidden lg:table-cell">Mã nhật ký</th>
                 <th className="p-4 md:p-6">Tài khoản</th>
-                <th className="p-4 md:p-6">Quyền hạn</th>
+                <th className="p-4 md:p-6 hidden sm:table-cell">Quyền hạn</th>
                 <th className="p-4 md:p-6">Hành động</th>
                 <th className="p-4 md:p-6">Chi tiết thao tác</th>
               </tr>
@@ -57,9 +57,9 @@ export const AuditLogTab: React.FC = () => {
                     <td className="p-4 md:p-6 font-mono text-[10px] text-primary/55 dark:text-cream/55 flex items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-accent" /> {log.timestamp}
                     </td>
-                    <td className="p-4 md:p-6 font-mono text-primary/60 dark:text-cream/60">{log.id}</td>
+                    <td className="p-4 md:p-6 font-mono text-primary/60 dark:text-cream/60 hidden lg:table-cell">{log.id}</td>
                     <td className="p-4 md:p-6">{log.user}</td>
-                    <td className="p-4 md:p-6">
+                    <td className="p-4 md:p-6 hidden sm:table-cell">
                       <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
                         log.role === 'admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300' :
                         log.role === 'accountant' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300' :
