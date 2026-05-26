@@ -46,7 +46,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem('tea_user');
-      return saved ? JSON.parse(saved) : {
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && parsed.email) {
+          return parsed;
+        }
+      }
+      return {
         name: 'Aveline Moreau',
         email: 'traveler@tea.com',
         role: 'user',
@@ -64,21 +70,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [tours, setTours] = useState<Tour[]>(() => {
-    const saved = localStorage.getItem('tea_tours');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as Tour[];
-        // Đồng bộ hóa các tour mặc định với dữ liệu mock mới nhất (để áp dụng featured: true, cập nhật ảnh...)
-        return parsed.map(t => {
-          const mock = mockTours.find(mt => mt.id === t.id);
-          if (mock) {
-            return { ...mock };
-          }
-          return t;
-        });
-      } catch (e) {
-        return mockTours;
+    try {
+      const saved = localStorage.getItem('tea_tours');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Đồng bộ hóa các tour mặc định với dữ liệu mock mới nhất (để áp dụng featured: true, cập nhật ảnh...)
+          return parsed.map(t => {
+            const mock = mockTours.find(mt => mt.id === t.id);
+            return mock ? { ...mock } : t;
+          });
+        }
       }
+    } catch (e) {
+      console.error('Error parsing tea_tours:', e);
     }
     return mockTours;
   });
@@ -86,26 +91,43 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [bookings, setBookings] = useState<Booking[]>(() => {
     try {
       const saved = localStorage.getItem('tea_bookings');
-      return saved ? JSON.parse(saved) : mockBookings;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
     } catch (e) {
       console.error('Error parsing tea_bookings:', e);
-      return mockBookings;
     }
+    return mockBookings;
   });
 
   const [wishlist, setWishlist] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('tea_wishlist');
-      return saved ? JSON.parse(saved) : ['sapa-emerald-terraces'];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
     } catch (e) {
       console.error('Error parsing tea_wishlist:', e);
-      return ['sapa-emerald-terraces'];
     }
+    return ['sapa-emerald-terraces'];
   });
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('tea_theme');
-    return (saved as 'light' | 'dark') || 'light';
+    try {
+      const saved = localStorage.getItem('tea_theme');
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
+      }
+    } catch (e) {
+      console.error('Error parsing tea_theme:', e);
+    }
+    return 'light';
   });
 
   // Apply theme class to body

@@ -187,7 +187,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [staffList, setStaffList] = useState<Staff[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_staff');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_staff:', e);
     }
@@ -277,7 +280,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [rooms, setRooms] = useState<Room[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_rooms');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_rooms:', e);
     }
@@ -333,7 +339,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_audit_logs');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_audit_logs:', e);
     }
@@ -361,7 +370,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [notifications, setNotifications] = useState<Notification[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_notifications');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_notifications:', e);
     }
@@ -389,7 +401,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [transactions, setTransactions] = useState<{ id: string; date: string; amount: number; method: string; status: 'Completed' | 'Refunded'; customer: string }[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_transactions');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_transactions:', e);
     }

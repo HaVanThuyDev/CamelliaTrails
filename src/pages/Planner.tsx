@@ -32,24 +32,32 @@ export const Planner: React.FC = () => {
 
   // Load from local storage
   useEffect(() => {
-    const saved = localStorage.getItem('tea_custom_trips');
-    if (saved) {
-      setTrips(JSON.parse(saved));
-    } else {
-      // Seed initial custom trip
-      const seed: CustomTrip = {
-        id: 'trip-seed',
-        title: 'Hành Trình Trà Mây & Thảo Dược Dao Đỏ',
-        location: 'Sapa, Lào Cai',
-        startDate: '2026-06-15',
-        days: [
-          { dayNumber: 1, morning: 'Thu hoạch lá trà Shan Tuyết', afternoon: 'Tắm lá thuốc Dao đỏ trong bồn gỗ', evening: 'Bữa tối cá hồi xông khói hương nhài', notes: 'Đi bộ chậm rãi quanh thung lũng.' },
-          { dayNumber: 2, morning: 'Thiền âm thanh bên thác nước', afternoon: 'Khóa học sấy trà tại hợp tác xã', evening: 'Kể chuyện cổ tích bên đống lửa', notes: 'Mang theo áo mưa ấm.' }
-        ]
-      };
-      setTrips([seed]);
-      localStorage.setItem('tea_custom_trips', JSON.stringify([seed]));
+    try {
+      const saved = localStorage.getItem('tea_custom_trips');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setTrips(parsed);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing tea_custom_trips:', e);
     }
+
+    // Seed initial custom trip
+    const seed: CustomTrip = {
+      id: 'trip-seed',
+      title: 'Hành Trình Trà Mây & Thảo Dược Dao Đỏ',
+      location: 'Sapa, Lào Cai',
+      startDate: '2026-06-15',
+      days: [
+        { dayNumber: 1, morning: 'Thu hoạch lá trà Shan Tuyết', afternoon: 'Tắm lá thuốc Dao đỏ trong bồn gỗ', evening: 'Bữa tối cá hồi xông khói hương nhài', notes: 'Đi bộ chậm rãi quanh thung lũng.' },
+        { dayNumber: 2, morning: 'Thiền âm thanh bên thác nước', afternoon: 'Khóa học sấy trà tại hợp tác xã', evening: 'Kể chuyện cổ tích bên đống lửa', notes: 'Mang theo áo mưa ấm.' }
+      ]
+    };
+    setTrips([seed]);
+    localStorage.setItem('tea_custom_trips', JSON.stringify([seed]));
   }, []);
 
   // Update current editing days when duration changes
