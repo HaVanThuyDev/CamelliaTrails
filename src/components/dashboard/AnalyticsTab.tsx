@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsChart } from '../HighchartsChart';
 import { useApp } from '../../context/AppContext';
 import { useDashboard } from '../../context/DashboardContext';
 import { Download, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
@@ -210,7 +210,7 @@ export const AnalyticsTab: React.FC = () => {
 
           {/* Highcharts Render for Predictive Analytics */}
           <div className="w-full my-4">
-            <HighchartsReact highcharts={Highcharts} options={forecastOptions} />
+            <HighchartsChart options={forecastOptions} />
           </div>
 
           <div className="flex gap-2.5 items-start text-[10px] bg-accent/10 border border-accent/20 p-3.5 rounded-2xl text-primary/85 dark:text-cream/85">

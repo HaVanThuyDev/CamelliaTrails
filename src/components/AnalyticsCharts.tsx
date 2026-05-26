@@ -1,6 +1,6 @@
 import React from 'react';
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsChart } from './HighchartsChart';
 import { useApp } from '../context/AppContext';
 import { DollarSign, Eye, ShoppingCart, Sparkles } from 'lucide-react';
 
@@ -275,7 +275,7 @@ export const AnalyticsCharts: React.FC = () => {
 
         {/* Highcharts Render */}
         <div className="w-full">
-          <HighchartsReact highcharts={Highcharts} options={lineOptions} />
+          <HighchartsChart options={lineOptions} />
         </div>
       </div>
 
@@ -290,7 +290,7 @@ export const AnalyticsCharts: React.FC = () => {
 
         {/* Highcharts Render */}
         <div className="relative py-2">
-          <HighchartsReact highcharts={Highcharts} options={donutOptions} />
+          <HighchartsChart options={donutOptions} />
         </div>
 
         {/* Legend labels list */}
@@ -325,7 +325,7 @@ export const AnalyticsCharts: React.FC = () => {
 
         {/* Highcharts Render */}
         <div className="w-full">
-          <HighchartsReact highcharts={Highcharts} options={barOptions} />
+          <HighchartsChart options={barOptions} />
         </div>
       </div>
     </div>

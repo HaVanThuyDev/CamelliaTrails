@@ -21,11 +21,14 @@ export const ReviewTab: React.FC = () => {
   const [flaggedIds, setFlaggedIds] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('dashboard_flagged_reviews');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
     } catch (e) {
       console.error('Error parsing dashboard_flagged_reviews:', e);
-      return [];
     }
+    return [];
   });
 
   // Gather and flatten reviews from all tours
