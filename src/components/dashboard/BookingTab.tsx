@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { useDashboard } from '../../context/DashboardContext';
-import { User, Calendar, Trash2, Check, Search } from 'lucide-react';
+import { User, Calendar, Trash2, Check, Search, Receipt } from 'lucide-react';
 
 export const BookingTab: React.FC = () => {
   const { bookings, cancelBooking } = useApp();
-  const { addLog } = useDashboard();
+  const { addLog, setActiveTab } = useDashboard();
+
+  const handleExportInvoice = (booking: any) => {
+    sessionStorage.setItem('prefill_invoice_booking', JSON.stringify(booking));
+    setActiveTab('invoices');
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'Confirmed' | 'Cancelled' | 'Pending'>('all');
 
@@ -143,6 +148,14 @@ export const BookingTab: React.FC = () => {
                     </td>
                     <td className="p-4 md:p-6 text-right">
                       <div className="flex justify-end gap-2">
+                        {/* Export vInvoice button */}
+                        <button
+                          onClick={() => handleExportInvoice(b)}
+                          className="p-1.5 rounded-lg bg-primary/5 hover:bg-accent hover:text-primary dark:hover:bg-accent dark:hover:text-primary text-primary/75 dark:text-cream/75 cursor-pointer"
+                          title="Tạo hóa đơn vInvoice"
+                        >
+                          <Receipt className="w-4 h-4" />
+                        </button>
                         {/* Confirm button */}
                         {b.status === 'Chờ xử lý' && (
                           <button

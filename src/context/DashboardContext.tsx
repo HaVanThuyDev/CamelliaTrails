@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useApp } from './AppContext';
 import type { Booking } from './AppContext';
+import { api } from '../services/apiClient';
 
 // Types for Dashboard
 export interface Staff {
@@ -86,6 +87,7 @@ export const translations = {
     realTimePush: 'Mô phỏng đặt vé (Real-time)',
     notificationTitle: 'Thông báo mới',
     cashierRegister: 'Quầy thu ngân',
+    invoices: 'Xuất hóa đơn điện tử',
   },
   en: {
     overview: 'Overview',
@@ -112,6 +114,7 @@ export const translations = {
     realTimePush: 'Simulate Booking (Real-time)',
     notificationTitle: 'New Notification',
     cashierRegister: 'Cashier Portal',
+    invoices: 'vInvoice Invoices',
   },
   ja: {
     overview: 'ダッシュボード',
@@ -138,6 +141,7 @@ export const translations = {
     realTimePush: '予約シミュレーション',
     notificationTitle: '新着通知',
     cashierRegister: 'レジ・会計',
+    invoices: 'vInvoice 請求書',
   }
 };
 
@@ -183,188 +187,14 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return translations[lang][key] || translations['en'][key] || key;
   };
 
-  // Staff Mock Data
-  const [staffList, setStaffList] = useState<Staff[]>(() => {
-    try {
-      const saved = localStorage.getItem('dashboard_staff');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.error('Error parsing dashboard_staff:', e);
-    }
-    return [
-      {
-        id: 'S-101',
-        name: 'Giang Thị Mảy',
-        role: 'guide',
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
-        email: 'may.giang@camelliatrails.com',
-        status: 'active',
-        attendance: [
-          { checkIn: '08:00', checkOut: '17:00', date: '2026-05-25' },
-        ],
-        schedule: {
-          monday: 'Sapa Trekking 5D',
-          tuesday: 'Sapa Trekking 5D',
-          wednesday: 'Sapa Trekking 5D',
-          thursday: 'Sapa Trekking 5D',
-          friday: 'Sapa Trekking 5D',
-          saturday: 'Day Off',
-          sunday: 'Tea Class',
-        }
-      },
-      {
-        id: 'S-102',
-        name: 'Kenji Sato',
-        role: 'guide',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
-        email: 'kenji.sato@camelliatrails.com',
-        status: 'active',
-        attendance: [
-          { checkIn: '08:15', checkOut: '17:30', date: '2026-05-25' },
-        ],
-        schedule: {
-          monday: 'Zen Ceremony',
-          tuesday: 'Zen Ceremony',
-          wednesday: 'Zen Ceremony',
-          thursday: 'Day Off',
-          friday: 'Matcha Workshop',
-          saturday: 'Matcha Workshop',
-          sunday: 'Day Off',
-        }
-      },
-      {
-        id: 'S-103',
-        name: 'Lê Minh Tuấn',
-        role: 'receptionist',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-        email: 'tuan.le@camelliatrails.com',
-        status: 'active',
-        attendance: [],
-        schedule: {
-          monday: '08:00 - 16:00',
-          tuesday: '08:00 - 16:00',
-          wednesday: '08:00 - 16:00',
-          thursday: '08:00 - 16:00',
-          friday: '08:00 - 16:00',
-          saturday: 'Day Off',
-          sunday: 'Day Off',
-        }
-      },
-      {
-        id: 'S-104',
-        name: 'Nguyễn Thị Hương',
-        role: 'accountant',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-        email: 'huong.nguyen@camelliatrails.com',
-        status: 'active',
-        attendance: [
-          { checkIn: '08:05', checkOut: null, date: '2026-05-26' }
-        ],
-        schedule: {
-          monday: '09:00 - 18:00',
-          tuesday: '09:00 - 18:00',
-          wednesday: '09:00 - 18:00',
-          thursday: '09:00 - 18:00',
-          friday: '09:00 - 18:00',
-          saturday: 'Day Off',
-          sunday: 'Day Off',
-        }
-      }
-    ];
-  });
+  // Staff — loaded from backend
+  const [staffList, setStaffList] = useState<Staff[]>([]);
 
-  // Rooms/Lodges Mock Data
-  const [rooms, setRooms] = useState<Room[]>(() => {
-    try {
-      const saved = localStorage.getItem('dashboard_rooms');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.error('Error parsing dashboard_rooms:', e);
-    }
-    return [
-      {
-        id: 'R-201',
-        name: 'Sapa Bamboo Suite 1',
-        type: 'Suite',
-        capacity: 2,
-        pricePerNight: 220,
-        status: 'Occupied',
-        location: 'Sapa Lodge',
-        bookings: [
-          { bookingId: 'B-8472', checkIn: '2026-06-15', checkOut: '2026-06-20' }
-        ]
-      },
-      {
-        id: 'R-202',
-        name: 'Sapa Bamboo Villa 2',
-        type: 'Villa',
-        capacity: 4,
-        pricePerNight: 350,
-        status: 'Available',
-        location: 'Sapa Lodge',
-        bookings: []
-      },
-      {
-        id: 'R-203',
-        name: 'Shizuoka Zen Cabin A',
-        type: 'Cabin',
-        capacity: 2,
-        pricePerNight: 280,
-        status: 'Occupied',
-        location: 'Shizuoka Sanctuary',
-        bookings: [
-          { bookingId: 'B-9201', checkIn: '2026-07-15', checkOut: '2026-07-21' }
-        ]
-      },
-      {
-        id: 'R-204',
-        name: 'Munnar Ayurveda Hut 1',
-        type: 'Cabin',
-        capacity: 2,
-        pricePerNight: 190,
-        status: 'Maintenance',
-        location: 'Munnar Retreat',
-        bookings: []
-      }
-    ];
-  });
+  // Rooms — loaded from backend
+  const [rooms, setRooms] = useState<Room[]>([]);
 
-  // Audit Logs
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
-    try {
-      const saved = localStorage.getItem('dashboard_audit_logs');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.error('Error parsing dashboard_audit_logs:', e);
-    }
-    return [
-      {
-        id: 'L-5001',
-        timestamp: '2026-05-26 10:15:23',
-        user: 'Giám đốc Sáng tạo (Admin)',
-        role: 'admin',
-        action: 'Khởi tạo hệ thống',
-        details: 'Khởi chạy bảng quản trị Camellia Trails'
-      },
-      {
-        id: 'L-5002',
-        timestamp: '2026-05-26 14:02:11',
-        user: 'Giám đốc Sáng tạo (Admin)',
-        role: 'admin',
-        action: 'Thay đổi cấu hình',
-        details: 'Bật chế độ đồng bộ dữ liệu ngoại tuyến'
-      }
-    ];
-  });
+  // Audit Logs — loaded from backend
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
 
   // Notifications
   const [notifications, setNotifications] = useState<Notification[]>(() => {
@@ -397,44 +227,87 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     ];
   });
 
-  // Transaction Ledger (Payments Module)
-  const [transactions, setTransactions] = useState<{ id: string; date: string; amount: number; method: string; status: 'Completed' | 'Refunded'; customer: string }[]>(() => {
-    try {
-      const saved = localStorage.getItem('dashboard_transactions');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.error('Error parsing dashboard_transactions:', e);
-    }
-    return [
-      { id: 'TX-901', date: '2026-05-25', amount: 2500, method: 'Stripe (Visa)', status: 'Completed', customer: 'Aveline Moreau' },
-      { id: 'TX-902', date: '2026-05-22', amount: 2450, method: 'Stripe (Mastercard)', status: 'Completed', customer: 'Aveline Moreau' },
-      { id: 'TX-903', date: '2026-05-20', amount: 1420, method: 'PayPal', status: 'Completed', customer: 'Isabella Ross' }
-    ];
-  });
+  // Transaction Ledger — loaded from backend
+  const [transactions, setTransactions] = useState<{ id: string; date: string; amount: number; method: string; status: 'Completed' | 'Refunded'; customer: string }[]>([]);
 
-  // Sync to localStorage
+  // ---- Fetch all dashboard data from backend on mount ----
   useEffect(() => {
-    localStorage.setItem('dashboard_staff', JSON.stringify(staffList));
-  }, [staffList]);
-
-  useEffect(() => {
-    localStorage.setItem('dashboard_rooms', JSON.stringify(rooms));
-  }, [rooms]);
+    api.getStaff()
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setStaffList(data.map((s: any) => ({
+            id: s.id,
+            name: s.name,
+            email: s.email,
+            role: s.role,
+            avatar: s.avatar,
+            status: s.status,
+            attendance: s.checked_in_at
+              ? [{ checkIn: s.checked_in_at, checkOut: s.checked_out_at, date: new Date().toISOString().split('T')[0] }]
+              : [],
+            schedule: { monday: '', tuesday: '', wednesday: '', thursday: '', friday: '', saturday: 'Day Off', sunday: 'Day Off' },
+          })));
+        }
+      })
+      .catch(() => {/* backend offline */});
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('dashboard_audit_logs', JSON.stringify(auditLogs));
-  }, [auditLogs]);
+    api.getRooms()
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setRooms(data.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            type: r.type,
+            capacity: 2,
+            pricePerNight: r.price,
+            status: r.status,
+            location: r.name,
+            bookings: r.current_booking ? JSON.parse(r.current_booking) : [],
+          })));
+        }
+      })
+      .catch(() => {/* backend offline */});
+  }, []);
+
+  useEffect(() => {
+    api.getAuditLogs()
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAuditLogs(data.map((l: any) => ({
+            id: l.id,
+            timestamp: l.timestamp,
+            user: l.user,
+            role: l.role,
+            action: l.action,
+            details: l.details,
+          })));
+        }
+      })
+      .catch(() => {/* backend offline */});
+  }, []);
+
+  useEffect(() => {
+    api.getTransactions()
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTransactions(data.map((t: any) => ({
+            id: t.id,
+            date: t.date,
+            amount: t.amount,
+            method: t.method,
+            status: t.status as 'Completed' | 'Refunded',
+            customer: t.customer,
+          })));
+        }
+      })
+      .catch(() => {/* backend offline */});
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('dashboard_notifications', JSON.stringify(notifications));
   }, [notifications]);
-
-  useEffect(() => {
-    localStorage.setItem('dashboard_transactions', JSON.stringify(transactions));
-  }, [transactions]);
 
   // Set Role & log it
   const setRole = (newRole: 'admin' | 'staff' | 'accountant') => {
@@ -453,6 +326,15 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       details
     };
     setAuditLogs(prev => [newLog, ...prev]);
+    // Sync to backend
+    api.createLog({
+      id: newLog.id,
+      timestamp: newLog.timestamp,
+      user: newLog.user,
+      role: newLog.role,
+      action: newLog.action,
+      details: newLog.details,
+    }).catch(() => {/* backend offline */});
   };
 
   // Notification helper
@@ -530,7 +412,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const averageRating = tour.rating || 5.0;
     const priceAdjust = averageRating > 4.9 ? tour.price * 1.15 : tour.price * 0.95;
     const roundedPrice = Math.round(priceAdjust / 10) * 10;
-    const reason = averageRating > 4.9 
+    const reason = averageRating > 4.9
       ? `Nhu cầu cao & đánh giá xuất sắc (${averageRating}⭐). Gợi ý tăng giá 15% để tối ưu hóa lợi nhuận.`
       : `Đánh giá trung bình. Khuyến nghị giảm giá nhẹ 5% hoặc chạy chiến dịch flash sale để thúc đẩy lượt đặt.`;
 
@@ -636,6 +518,8 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       customer
     };
     setTransactions(prev => [newTx, ...prev]);
+    // Sync to backend
+    api.createTransaction(newTx).catch(() => {/* backend offline */});
   };
 
   const refundTransaction = (id: string) => {
@@ -643,6 +527,8 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const tx = transactions.find(t => t.id === id);
     addLog('Hoàn tiền khách hàng', `Hoàn trả số tiền $${tx?.amount} cho hóa đơn ${id}`);
     addNotification('Hoàn tiền thành công', `Hóa đơn thanh toán ${id} đã được hoàn tiền thành công.`, 'warning');
+    // Sync to backend
+    api.refundTransaction(id).catch(() => {/* backend offline */});
   };
 
   return (

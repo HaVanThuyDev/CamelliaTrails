@@ -1,0 +1,8 @@
+{
+  "/api/audit-logs/route": "app/api/audit-logs/route.js",
+  "/api/bookings/route": "app/api/bookings/route.js",
+  "/api/transactions/route": "app/api/transactions/route.js",
+  "/api/staff/route": "app/api/staff/route.js",
+  "/api/tours/route": "app/api/tours/route.js",
+  "/api/rooms/route": "app/api/rooms/route.js"
+}

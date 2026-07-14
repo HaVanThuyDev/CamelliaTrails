@@ -5,7 +5,7 @@ import { useDashboard } from '../context/DashboardContext';
 import {
   Leaf, Menu, Sun, Moon, Bell, Search, Globe, ChevronDown, User, LogOut,
   BarChart3, Briefcase, FileSpreadsheet, Home, Calendar, Users, Eye,
-  AlertCircle, ShieldCheck, CreditCard, ClipboardList, Keyboard, X
+  AlertCircle, ShieldCheck, CreditCard, ClipboardList, Keyboard, X, Receipt
 } from 'lucide-react';
 
 // Tab Components
@@ -20,6 +20,7 @@ import { ReviewTab } from '../components/dashboard/ReviewTab';
 import { PaymentTab } from '../components/dashboard/PaymentTab';
 import { AnalyticsTab } from '../components/dashboard/AnalyticsTab';
 import { AuditLogTab } from '../components/dashboard/AuditLogTab';
+import { InvoiceTab } from '../components/dashboard/InvoiceTab';
 
 export const Dashboard: React.FC = () => {
   const { currentUser, logout, theme, toggleTheme, tours, bookings } = useApp();
@@ -134,6 +135,7 @@ export const Dashboard: React.FC = () => {
     { id: 'customers', label: t('customers'), icon: User, roles: ['admin', 'staff'] },
     { id: 'reviews', label: t('reviews'), icon: Eye, roles: ['admin', 'staff'] },
     { id: 'payments', label: t('payments'), icon: CreditCard, roles: ['admin', 'accountant'] },
+    { id: 'invoices', label: t('invoices'), icon: Receipt, roles: ['admin', 'accountant'] },
     { id: 'analytics', label: t('analytics'), icon: BarChart3, roles: ['admin', 'accountant'] },
     { id: 'auditLogs', label: t('auditLogs'), icon: ClipboardList, roles: ['admin'] }
   ];
@@ -512,6 +514,7 @@ export const Dashboard: React.FC = () => {
           {activeTab === 'customers' && <CustomerTab />}
           {activeTab === 'reviews' && <ReviewTab />}
           {activeTab === 'payments' && <PaymentTab />}
+          {activeTab === 'invoices' && <InvoiceTab />}
           {activeTab === 'analytics' && <AnalyticsTab />}
           {activeTab === 'auditLogs' && <AuditLogTab />}
         </main>
@@ -547,6 +550,7 @@ export const Dashboard: React.FC = () => {
                 { label: 'Đi tới Quản lý Đơn hàng', cmd: 'goto:bookings' },
                 { label: 'Đi tới Lịch trình (Drag & Drop Scheduler)', cmd: 'goto:schedule' },
                 { label: 'Đi tới Quản lý Phòng nghỉ', cmd: 'goto:rooms' },
+                { label: 'Đi tới Hóa đơn vInvoice', cmd: 'goto:invoices' },
                 { label: 'Đi tới Nhật ký bảo mật (Audit Logs)', cmd: 'goto:auditLogs' }
               ].map((c, idx) => (
                 <button
